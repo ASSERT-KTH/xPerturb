@@ -7,6 +7,7 @@ import spoon.reflect.code.CtConstructorCall;
 import spoon.reflect.code.CtInvocation;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.code.CtReturn;
+import spoon.reflect.declaration.CtAnnotation;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.visitor.filter.NamedElementFilter;
@@ -43,6 +44,7 @@ public class TestProcessLiteralsVariable {
             for (CtLiteral elem : elems) {
                 if (elem.getParent() instanceof CtConstructorCall && ((CtConstructorCall) elem.getParent()).getExecutable().getType().getSimpleName().equals("PerturbationLocationImpl"))
                     continue;// we skip lit introduce by the perturbation
+                if (elem.getParent() instanceof CtAnnotation) continue;
                 //parent is invokation
                 assertTrue(elem.getParent() instanceof CtInvocation);
                 //this invokation come from perturbator

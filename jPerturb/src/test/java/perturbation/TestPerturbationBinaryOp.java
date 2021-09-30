@@ -6,6 +6,7 @@ import util.Util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.net.URLClassLoader;
 
 import static org.junit.Assert.assertEquals;
@@ -25,8 +26,7 @@ public class TestPerturbationBinaryOp {
         launcher.run();
 
         //The pertubation works?
-        Util.addPathToClassPath(launcher.getModelBuilder().getBinaryOutputDirectory().toURL());
-        URLClassLoader classLoaderWithoutOldFile = Util.removeOldFileFromClassPath((URLClassLoader) ClassLoader.getSystemClassLoader());
+        URLClassLoader classLoaderWithoutOldFile = new URLClassLoader(new URL[]{launcher.getModelBuilder().getBinaryOutputDirectory().toURL()}, Util.class.getClassLoader() );
 
         Class<?> classPerturbationLocation = classLoaderWithoutOldFile.loadClass("perturbation.location.PerturbationLocation");
         Method setEnactor = classPerturbationLocation.getMethod("setEnactor", classLoaderWithoutOldFile.loadClass("perturbation.enactor.Enactor"));
