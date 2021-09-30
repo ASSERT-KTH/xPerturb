@@ -5,6 +5,7 @@ import spoon.Launcher;
 import spoon.reflect.code.CtConstructorCall;
 import spoon.reflect.code.CtInvocation;
 import spoon.reflect.code.CtLiteral;
+import spoon.reflect.declaration.CtAnnotation;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.visitor.filter.NamedElementFilter;
@@ -12,6 +13,7 @@ import spoon.reflect.visitor.filter.TypeFilter;
 import spoon.support.reflect.code.CtInvocationImpl;
 import util.Util;
 
+import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Set;
@@ -43,16 +45,16 @@ public class TestProcessImplicitCast {
             for (CtLiteral elem : elems) {
                 if (elem.getParent() instanceof CtConstructorCall && ((CtConstructorCall) elem.getParent()).getExecutable().getType().getSimpleName().equals("PerturbationLocationImpl"))
                     continue;// we skip lit introduce by the perturbation
+                if (elem.getParent() instanceof CtAnnotation) continue;
                 //parent is invokation
-                assertTrue(elem.getParent() instanceof CtInvocation);
+                assertTrue(elem.getParent().toString(), elem.getParent() instanceof CtInvocation);
                 //this invokation come from pertubator
                 assertTrue(((CtInvocationImpl) elem.getParent()).getExecutable().getDeclaringType().equals(p.getReference()));
             }
         }
 
         //We assume if we can't instanciate the class, something went wrong
-        Util.addPathToClassPath(launcher.getModelBuilder().getBinaryOutputDirectory().toURL());
-        ClassLoader sysloader = ClassLoader.getSystemClassLoader();
+        ClassLoader sysloader  = new URLClassLoader(new URL[]{launcher.getModelBuilder().getBinaryOutputDirectory().toURL()}, Util.class.getClassLoader() );
         Class<?> CastResClass = sysloader.loadClass(c.getQualifiedName());
         Object CastResInstance = CastResClass.newInstance();
     }
