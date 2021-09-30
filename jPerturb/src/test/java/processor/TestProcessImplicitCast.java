@@ -52,7 +52,7 @@ public class TestProcessImplicitCast {
 
         //We assume if we can't instanciate the class, something went wrong
         Util.addPathToClassPath(launcher.getModelBuilder().getBinaryOutputDirectory().toURL());
-        URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+        ClassLoader sysloader = ClassLoader.getSystemClassLoader();
         Class<?> CastResClass = sysloader.loadClass(c.getQualifiedName());
         Object CastResInstance = CastResClass.newInstance();
     }
